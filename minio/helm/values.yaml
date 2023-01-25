@@ -1,0 +1,15 @@
+rootUser: admin
+rootPassword: adminpassword
+replicas: 1
+
+#persistence:
+#  existingClaim: minio-pvc
+#  storageClass: local-storage
+#  accessModes: [ ReadWriteMany ]
+#  size: 10Gi
+#  enabled: true
+
+
+#  mountPath: /data/minio
+#  annotations 	Annotations for the PVC 	{}
+#  existingClaim 	Name of an existing PVC to use (only in standalone mode) 	""

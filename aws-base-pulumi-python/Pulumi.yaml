@@ -1,0 +1,6 @@
+name: aws-base-pulumi-python
+runtime:
+  name: python
+  options:
+    virtualenv: c:/venvs/devops
+description: A minimal AWS Python Pulumi program

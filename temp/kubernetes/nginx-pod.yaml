@@ -1,0 +1,29 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx
+  namespace: main
+data:
+  database.url: "https://dbserver.somewhere.com:3396"
+  database.passwor: 'password1'
+
+---
+
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx
+  namespace: main
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+      env:
+        - name: MY_VAR
+          valueFrom:
+            configMapKeyRef:
+              name: nginx
+              key: database.url

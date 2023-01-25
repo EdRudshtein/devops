@@ -1,0 +1,6 @@
+executor: "KubernetesExecutor"
+
+# custom Docker imgaes
+#defaultAirflowRepository: rudshtein.local:5000/airflow
+#defaultAirflowTag: "1.0.0"
+

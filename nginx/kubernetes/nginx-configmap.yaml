@@ -1,0 +1,12 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-web-page
+data:
+  index.html: |
+    <html><head><title>Hello From Nginx</title></head>
+    <body>
+    <h2>hello from devops-nginx</h2>
+    <br/>
+    datetime: <script>document.write(Date())</script>
+    </body></html>

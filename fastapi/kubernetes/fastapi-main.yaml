@@ -1,0 +1,61 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: fastapi-deployment
+  labels:
+    app: devops-fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-fastapi
+  template:
+    metadata:
+      labels:
+        app: devops-fastapi
+    spec:
+      containers:
+        - name: devops-fastapi
+          image: edrudshtein/devops_fastapi:1.8
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+#          resources:
+#            # You must specify requests for CPU to autoscale based on CPU utilization
+#            requests:
+#              cpu: "250m"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: fastapi-service
+spec:
+  selector:
+    app: devops-fastapi
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+#  type: LoadBalancer
+
+---
+
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: main
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fastapi-service
+                port:
+                  number: 8080

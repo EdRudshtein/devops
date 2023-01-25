@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres-airflow
+spec:
+  selector:
+    name: postgres-airflow
+  ports:
+    - name: postgres-airflow
+      protocol: TCP
+      port: 5432
+      targetPort: 5432

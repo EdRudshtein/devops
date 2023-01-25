@@ -1,0 +1,6 @@
+$env:AWS_ACCESS_KEY_ID = "admin"
+$env:AWS_SECRET_ACCESS_KEY = "sample_key"
+$env:AWS_REGION = "us-east-1"
+$env:AWS_BUCKET_NAME = "mlflow"
+$env:MLFLOW_S3_ENDPOINT_URL = "http://localhost:9000"
+$env:MLFLOW_TRACKING_URI = "http://localhost:5000"

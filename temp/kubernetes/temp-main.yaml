@@ -1,0 +1,58 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: temp-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: "/volumes/temp-pv"
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: temp-pvc
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: echo
+spec:
+  selector:
+    matchLabels:
+      app: echo
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: echo
+    spec:
+      volumes:
+        - name: app-volume
+          persistentVolumeClaim:
+            claimName: temp-pvc
+      containers:
+        - image: busybox
+          name: echo
+          volumeMounts:
+            - mountPath: "/data"
+              name: app-volume
+          command: [ "ping", "127.0.0.1" ]

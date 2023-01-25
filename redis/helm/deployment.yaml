@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment-{{ include "fastapi-helm.fullname" . }}
+  namespace: { { .Release.Namespace } }
+  labels:
+    app: ecommerce
+    version: { { .Chart.AppVersion } }
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-app
+  template:
+    metadata:
+      labels:
+        app: redis-app
+    spec:
+      containers:
+        - image: redis:6.2.5-alpine
+          imagePullPolicy: IfNotPresent
+          name: redis-container

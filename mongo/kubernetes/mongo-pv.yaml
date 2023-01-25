@@ -1,0 +1,14 @@
+# How do we want it implemented
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: local-storage
+spec:
+  storageClassName: mylocalstorage
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/some new/directory/structure/"
+    type: DirectoryOrCreate

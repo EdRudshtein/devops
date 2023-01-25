@@ -1,0 +1,230 @@
+---
+version: '3'
+services:
+
+  zookeeper:
+    image: 'confluentinc/cp-zookeeper:latest'
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper_data:/var/lib/zookeeper:z'
+    networks:
+      - kafka-net
+
+
+  kafka1:
+    image: 'confluentinc/cp-kafka:latest'
+    depends_on:
+      - zookeeper
+    ports:
+      - 19092
+      - '9092:9092'
+    environment:
+      - KAFKA_BROKER_ID=1
+      - 'KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181'
+      - KAFKA_JMX_PORT=9999
+      - KAFKA_ALLOW_PLAINTEXT_LISTENER=yes
+      - 'KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      - 'LISTENERS=CLIENT://:19092,EXTERNAL://:9092'
+      - KAFKA_ADVERTISED_LISTENERS=CLIENT://kafka1:19092,EXTERNAL://localhost:9092
+      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - CONFLUENT_METRICS_ENABLE='false'
+    volumes:
+      - 'kafka1_data:/var/lib/kafka:z'
+    networks:
+      - kafka-net
+
+
+  kafka2:
+    image: 'confluentinc/cp-kafka:latest'
+    depends_on:
+      - zookeeper
+    ports:
+      - 19092
+      - '9093:9093'
+    environment:
+      - KAFKA_BROKER_ID=2
+      - 'KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181'
+      - KAFKA_JMX_PORT=9999
+      - KAFKA_ALLOW_PLAINTEXT_LISTENER=yes
+      - 'KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      - 'LISTENERS=CLIENT://:19092,EXTERNAL://:9093'
+      - KAFKA_ADVERTISED_LISTENERS=CLIENT://kafka2:19092,EXTERNAL://localhost:9093
+      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - CONFLUENT_METRICS_ENABLE='false'
+    volumes:
+      - 'kafka2_data:/var/lib/kafka:z'
+    networks:
+      - kafka-net
+
+
+  kafka3:
+    image: 'confluentinc/cp-kafka:latest'
+    depends_on:
+      - zookeeper
+    ports:
+      - 19092
+      - '9094:9094'
+    environment:
+      - KAFKA_BROKER_ID=3
+      - 'KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181'
+      - KAFKA_JMX_PORT=9999
+      - KAFKA_ALLOW_PLAINTEXT_LISTENER=yes
+      - 'KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      - 'LISTENERS=CLIENT://:19092,EXTERNAL://:9094'
+      - KAFKA_ADVERTISED_LISTENERS=CLIENT://kafka3:19092,EXTERNAL://localhost:9094
+      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+      - CONFLUENT_METRICS_ENABLE='false'
+    volumes:
+      - 'kafka3_data:/var/lib/kafka:z'
+    networks:
+      - kafka-net
+
+
+
+  kafka-cluster-manager:
+    build:
+      context: kafka-cluster-manager
+    depends_on:
+      - zookeeper
+    ports:
+      - '9000:9000'
+    restart: unless-stopped
+    environment:
+      - 'ZK_HOSTS=zookeeper:2181'
+    networks:
+      - kafka-net
+
+
+  grafana:
+    image: grafana/grafana:8.2.5
+    ports:
+      - 3000
+    environment:
+      GF_PATHS_DATA: /var/lib/grafana
+      GF_SECURITY_ADMIN_PASSWORD: kafka
+    volumes:
+      - './grafana/provisioning:/etc/grafana/provisioning'
+      - './grafana/dashboards:/var/lib/grafana/dashboards'
+    depends_on:
+      - prometheus
+    networks:
+      - kafka-net
+
+
+
+  prometheus:
+    image: prom/prometheus:v2.31.1
+    ports:
+      - 9090
+    volumes:
+      - './config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro'
+    command: '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - kafka-net
+
+  nodeexporter:
+    image: prom/node-exporter:v1.3.0
+    container_name: nodeexporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    restart: unless-stopped
+    ports:
+      - 9100
+    networks:
+      - kafka-net
+
+
+  jmx-kafka1:
+    image: sscaling/jmx-prometheus-exporter
+    ports:
+      - 5556
+    environment:
+      CONFIG_YML: /etc/jmx_exporter/config.yml
+      JVM_OPTS: '-Xmx512M'
+    volumes:
+      - './config/jmx_exporter/config_kafka1.yml:/etc/jmx_exporter/config.yml:ro'
+    depends_on:
+      - kafka1
+    networks:
+      - kafka-net
+
+
+
+  jmx-kafka2:
+    image: sscaling/jmx-prometheus-exporter
+    ports:
+      - 5556
+    environment:
+      CONFIG_YML: /etc/jmx_exporter/config.yml
+      JVM_OPTS: '-Xmx512M'
+    volumes:
+      - './config/jmx_exporter/config_kafka2.yml:/etc/jmx_exporter/config.yml:ro'
+    depends_on:
+      - kafka2
+    networks:
+      - kafka-net
+
+
+
+  jmx-kafka3:
+    image: sscaling/jmx-prometheus-exporter
+    ports:
+      - 5556
+    environment:
+      CONFIG_YML: /etc/jmx_exporter/config.yml
+      JVM_OPTS: '-Xmx512M'
+    volumes:
+      - './config/jmx_exporter/config_kafka3.yml:/etc/jmx_exporter/config.yml:ro'
+    depends_on:
+      - kafka3
+    networks:
+      - kafka-net
+
+
+
+  caddy:
+    image: 'caddy:2.3.0'
+    ports:
+      - '3000:3000'
+      - '9090:9090'
+    volumes:
+      - './config/caddy:/etc/caddy'
+    networks:
+      - kafka-net
+
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka1_data:
+    driver: local
+  kafka2_data:
+    driver: local
+  kafka3_data:
+    driver: local
+
+
+networks:
+  kafka-net:
+    driver: bridge
+    name: kafka-net

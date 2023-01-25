@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+
+  server:
+    image: "edrudshtein/devops_fastapi:${DEVOPS_FASTAPI_VERSION}"
+    networks:
+      - default
+    ports:
+      - '8080:8080'
+
+
+networks:
+  default:
+    external: true
+    name: internal

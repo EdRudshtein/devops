@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+
+  mlflow:
+    image: egr_mlflow:2.1
+    ports:
+      - '5000:5000'
+    environment:
+      - MLFLOW_S3_ENDPOINT_URL=http://localhost:9001
+      - AWS_ACCESS_KEY_ID=egr
+      - AWS_SECRET_ACCESS_KEY=egregregr
+      - AWS_BUCKET_NAME=mlflow
+      - AWS_DEFAULT_REGION=${AWS_REGION}
+    entrypoint: mlflow server --backend-store-uri postgresql+psycopg2://mlflow:mlflow@postgres_master:5432/mlflow --host 0.0.0.0 --port 5000
+    volumes:
+      - "${DOCKERVOLUMES_HOME}/mlflow:/mlflow"
+    networks:
+      - default
+
+volumes:
+  mlflow_volume:
+
+networks:
+  default:
+    external: true
+    name: internal

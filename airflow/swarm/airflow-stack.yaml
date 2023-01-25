@@ -1,0 +1,136 @@
+version: '3.9'
+
+x-airflow-common:
+  &airflow-common
+#  image: apache/airflow:2.5.0
+  image: egr_airflow:1.1
+  #  volumes:
+  #    - ./../airflow-data/dags:/opt/airflow/dags
+  #    - ./../airflow-data/plugins:/opt/airflow/plugins
+  #    - logs-volume:/opt/airflow/logs
+  #    - "${DOCKERVOLUMES_HOME}/airflow/logs:/opt/airflow/logs"
+  depends_on:
+    - redis
+  env_file:
+    - airflow-env
+  networks:
+    - default
+
+services:
+
+  redis:
+    image: redis:7.0
+    ports:
+      - '6379:6379'
+    env_file:
+      - airflow-env
+    networks:
+      - default
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+
+  airflow-flower:
+    command: celery flower
+    <<: *airflow-common
+    ports:
+      - '5555:5555'
+    volumes:
+      #     - ./../airflow-data/dags:/opt/airflow/dags
+      #     - ./../airflow-data/plugins:/opt/airflow/plugins
+      - "${DOCKERVOLUMES_HOME}/airflow/logs:/opt/airflow/logs"
+
+  airflow-scheduler:
+    command: scheduler
+    <<: *airflow-common
+    healthcheck:
+      test: [ "CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"' ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - ./../airflow-data/dags:/opt/airflow/dags
+      - ./../airflow-data/plugins:/opt/airflow/plugins
+      - "${DOCKERVOLUMES_HOME}/airflow/logs:/opt/airflow/logs"
+    depends_on:
+      - airflow-flower
+
+  airflow-webserver:
+    command: webserver
+    <<: *airflow-common
+    ports:
+      - '8080:8080'
+    depends_on:
+      - airflow-scheduler
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /opt/airflow/airflow-webserver.pid ]" ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+    volumes:
+      #     - ./../airflow-data/dags:/opt/airflow/dags
+      #      - ./../airflow-data/plugins:/opt/airflow/plugins
+      - "${DOCKERVOLUMES_HOME}/airflow/logs:/opt/airflow/logs"
+
+  airflow-worker1:
+    command: celery worker
+    <<: *airflow-common
+    depends_on:
+      - airflow-scheduler
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /opt/airflow/airflow-worker.pid ]" ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+    volumes:
+      - ./../airflow-data/dags:/opt/airflow/dags
+      - ./../airflow-data/plugins:/opt/airflow/plugins
+      - "${DOCKERVOLUMES_HOME}/airflow/logs:/opt/airflow/logs"
+
+  airflow-worker2:
+    command: celery worker
+    <<: *airflow-common
+    depends_on:
+      - airflow-scheduler
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /opt/airflow/airflow-worker.pid ]" ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+    volumes:
+      - ./../airflow-data/dags:/opt/airflow/dags
+      - ./../airflow-data/plugins:/opt/airflow/plugins
+      - "${DOCKERVOLUMES_HOME}/airflow/logs:/opt/airflow/logs"
+
+  airflow-worker3:
+    command: celery worker
+    <<: *airflow-common
+    depends_on:
+      - airflow-scheduler
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f /opt/airflow/airflow-worker.pid ]" ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+    volumes:
+      - ./../airflow-data/dags:/opt/airflow/dags
+      - ./../airflow-data/plugins:/opt/airflow/plugins
+      - "${DOCKERVOLUMES_HOME}/airflow/logs:/opt/airflow/logs"
+
+networks:
+  default:
+    external: true
+    name: internal
+
+  #volumes:
+  #  postgres-data:
+#  logs-volume:
+
+
+#secrets:
+#  pg_user:
+#    file: c:/temp/secrets/airflow/PG_USER.txt
+#  pg_password:
+#    file: c:/temp/secrets/airflow/PG_PASSWORD.txt

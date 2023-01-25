@@ -1,0 +1,12 @@
+[
+  "test_main.py::test_strConcat",
+  "test_main.py::test_strReplace",
+  "test_main.py::test_strSplit",
+  "test_main.py::test_strStrip",
+  "test_postgres.py::test_postgres_simple",
+  "tests_main.py::test_strConcat",
+  "tests_main.py::test_strReplace",
+  "tests_main.py::test_strSplit",
+  "tests_main.py::test_strStrip",
+  "tests_postgres.py::test_postgres_simple"
+]

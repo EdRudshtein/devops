@@ -1,0 +1,11 @@
+auth:
+  #  rootUser: egregregr
+  enablePostgresUser: true
+  postgresPassword: postgres
+
+#primary:
+#  persistence:
+#    enabled: true
+#    size: 10Gi
+#    storageClass: local-storage
+#    accessModes: [ ReadWriteMany ]

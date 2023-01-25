@@ -1,0 +1,22 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: minio-pv
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  local:
+    path: "c:/temp/minio"
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: server0
+              operator: In
+              values:
+                - "true"

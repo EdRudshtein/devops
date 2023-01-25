@@ -1,0 +1,1 @@
+helm delete example-fastapi

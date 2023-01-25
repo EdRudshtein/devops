@@ -1,0 +1,8 @@
+cassandra-driver
+#  - pytest
+#  - pydantic
+#  - pytest
+#  - sqlalchemy
+#  - pip
+#  - pip:
+#      - psycopg2

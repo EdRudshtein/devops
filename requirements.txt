@@ -1,0 +1,16 @@
+numpy
+pandas
+
+-r aws-base-pulumi-python/requirements.txt
+-r aws-pulumi-temp/requirements.txt
+-r airflow/requirements.txt
+-r cassandra/requirements.txt
+-r fastapi/requirements.txt
+-r kafka/requirements.txt
+-r minio/requirements.txt
+-r mlflow/requirements.txt
+-r neo4j/requirements.txt
+-r postgres/requirements.txt
+-r pulumi/requirements.txt
+-r redis/requirements.txt
+-r spark/requirements.txt

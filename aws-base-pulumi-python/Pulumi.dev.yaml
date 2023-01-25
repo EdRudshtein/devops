@@ -1,0 +1,51 @@
+config:
+  aws:region: us-east-1
+
+  vpc-name: vpc
+  vpc-cidr-block: 10.0.0.0/16
+
+  igw-name: igw
+
+  natgw-name: ngw
+  eip-natgw-name: eip-ngw
+
+  pubrttable_name: devopsjunc-pubrttable
+
+  subnet-public-info:
+    name: subnet-public
+    cidr-block: 10.0.0.0/24
+
+  subnet-private-info:
+    name: subnet-private
+    cidr-block: 10.0.1.0/24
+
+  rt-public-name: rt-public
+  rt-private-name: rt-private
+
+  rta-public-name: rta-public
+  rta-private-name: rta-private
+
+  sg-name: sg
+
+  # OK to expose since PUBLIC key
+  public-SSH-key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCu0w9XE0YXj1MWGq3LkjDBjdVWYpxIfpxCzLm+tawvfmGWkmQcsrvMU8LcssoeZkuOiLZ/l6FP5itwbhZlhaSReCyx2iQOYEngevI2VQXwkgqLUe2B8qCMGhbXnYdqC9iBy38CnN7+Q2vrYOSqFRYOKCKQyc4Gikta/gSpXRrBKpj+KiqqoghoXj4EMIit+FhK0dNAe/FYVmD07OSpj6Hc6LsiXhS2oOh1lcn76W2zX7DJssPdHCz096cQR7ErUfAthUrhs/JIRJXuH7v2rnxloQsmw++TzcU4tkmZ/AVYfqE80GGQ5pnkamgi7eW98msTv7ZRQLSBdhwprcnu0ybf egr@Main
+
+  ec2-ami-id: ami-0b5eea76982371e91
+
+  ec2-ssh-name: ec2-ssh
+  ec2-ssh-type: t2.micro
+
+  ec2-webserver-name: ec2-webserver
+  ec2-webserver-type: t2.micro
+
+  ec2-private-name: ec2-private
+  ec2-private-type: t2.micro
+
+  eip-main-name: eip-main
+
+#  aws-pulumi:data:
+#    active: true
+#    pub_subnet_name: devopsjunc-public-subnet
+#    prvrtasst_name: devopsjunc_prv_rt_asst
+#    ec2_private_name: devopsjunc_ec2_private
+#    ec2_private_type: t2.micro

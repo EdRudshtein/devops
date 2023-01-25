@@ -1,0 +1,13 @@
+apiVersion: 1
+
+# database.yaml.bak - has descriptions of more properties
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy  # we need to use proxy to work in remote environments
+    orgId: 1
+    url: http://prometheus:9090
+    basicAuth: false
+    isDefault: true
+    editable: true

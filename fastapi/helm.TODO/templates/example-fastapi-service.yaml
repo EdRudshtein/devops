@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: example-fastapi
+  labels:
+    service: example-fastapi
+spec:
+  selector:
+    app: example-fastapi
+  ports:
+    - protocol: TCP
+      port: 30080
+      targetPort: 5100

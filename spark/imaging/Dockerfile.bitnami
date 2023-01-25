@@ -1,0 +1,4 @@
+FROM bitnami/spark:3.3
+
+COPY additional-jars/* /opt/bitnami/spark/jars
+

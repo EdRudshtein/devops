@@ -1,0 +1,34 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: airflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deploy: airflow
+  template:
+    metadata:
+      labels:
+        deploy: airflow
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: airflow-webserver
+          image: docker.io/apache/airflow
+          command: [ "airflow" ]
+          args: [ "webserver" ]
+          env:
+            - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config           # The ConfigMap this value comes from.
+                  key: sql_alchemy_conn # The key to fetch.
+            - name: AIRFLOW__CORE__EXECUTOR
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-config
+                  key: executor
+          ports:
+            - containerPort: 8080
+

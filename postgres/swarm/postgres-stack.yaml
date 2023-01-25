@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+
+  postgres_master:
+    image: docker.io/bitnami/postgresql:14.6.0
+    ports:
+      - '5432:5432'
+    networks:
+      - default
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=${PGPASSWORD}
+      - POSTGRESQL_DATABASE=postgres
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+    volumes:
+      - '${DOCKERVOLUMES_HOME}/postgres/master:/bitnami/postgresql'
+
+  postgres_standby1:
+    image: docker.io/bitnami/postgresql:14.6.0
+    networks:
+      - default
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=${PGPASSWORD}
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_MASTER_HOST=postgres_master
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+    volumes:
+      - "${DOCKERVOLUMES_HOME}/postgres/standby1:/bitnami/postgresql"
+    depends_on:
+      - postgres_master
+
+networks:
+  default:
+    external: true
+    name: internal

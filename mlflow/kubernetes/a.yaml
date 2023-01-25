@@ -1,0 +1,41 @@
+---
+# Source: mlflow/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow
+  labels:
+    name: mlflow
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    name: mlflow
+---
+# Source: mlflow/templates/deployment.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: mlflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mlflow
+  template:
+    metadata:
+      labels:
+        name: mlflow
+    spec:
+      containers:
+        - name: mlflow
+          image: rudshtein.xyz:5000/mlflow:1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP

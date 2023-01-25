@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+
+  nginx:
+    image: nginx:1.23.3
+    volumes:
+      - type: bind
+        source: ./html
+        target: /usr/share/nginx/html
+    deploy:
+      replicas: 1
+    ports:
+      - '80:80'
+      - '443:8443'

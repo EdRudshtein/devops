@@ -1,0 +1,27 @@
+version: '2.1'
+services:
+    postgres:
+        image: postgres:9.6
+        environment:
+            - POSTGRES_USER=airflow-MERGE
+            - POSTGRES_PASSWORD=airflow-MERGE
+            - POSTGRES_DB=airflow-MERGE
+    webserver:
+        build: ./docker/airflow-MERGE
+        restart: always
+        depends_on:
+            - postgres
+        environment:
+            - LOAD_EX=n
+            - EXECUTOR=Local
+        volumes:
+            - ./mnt/airflow-MERGE/dags:/usr/local/airflow-MERGE/dags
+            - ./mnt/airflow-MERGE/airflow-MERGE.cfg:/usr/local/airflow-MERGE/airflow-MERGE.cfg
+        ports:
+            - "8080:8080"
+        command: webserver
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /usr/local/airflow-MERGE/airflow-MERGE-webserver.pid ]"]
+            interval: 30s
+            timeout: 30s
+            retries: 3

@@ -1,0 +1,4 @@
+pyspark
+pandas
+numpy
+py4j

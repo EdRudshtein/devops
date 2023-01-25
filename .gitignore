@@ -1,0 +1,40 @@
+# Production
+.idea/
+.vs/
+bin/
+obj/
+build/
+
+
+# Python
+venv/
+
+
+#  C# User-specific files
+
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+
+
+# Testing
+coverage/
+
+# Dependencies
+node_modules/
+
+# MLflow
+mlruns/
+
+# Terraform
+.terraform/

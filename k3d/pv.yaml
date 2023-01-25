@@ -1,0 +1,49 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv1
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: "/volumes/pv1"
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv2
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: "/volumes/pv2"
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv3
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: "/volumes/pv3"

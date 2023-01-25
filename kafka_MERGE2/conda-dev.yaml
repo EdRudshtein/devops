@@ -1,0 +1,12 @@
+name: example-kafka
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - ubuntu=3.9
+  - numpy
+  - pandas
+  - redis
+  - kafka-ubuntu
+  - pytest
+  - py4j

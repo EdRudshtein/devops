@@ -1,0 +1,82 @@
+version: "3.9"
+services:
+  cassandra_master:
+    image: cassandra:4
+    environment:
+      - CASSANDRA_CLUSTER_NAME=Mycluster
+      - CASSANDRA_BROADCAST_ADDRESS=cassandra_master
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+      - CASSANDRA_START_RPC=true
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=cassandra
+    ports:
+      - "7000:7000"
+      - "9042:9042"
+    volumes:
+      - cassandra_master_data:/var/lib/cassandra
+
+  cassandra_worker1:
+    image: cassandra:4
+    ports:
+      - "7001:7000"
+      - "9043:9042"
+    volumes:
+      - cassandra_worker1_data:/var/lib/cassandra
+    environment:
+      - CASSANDRA_SEEDS=cassandra_master
+      - CASSANDRA_CLUSTER_NAME=Mycluster
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+      - CASSANDRA_PASSWORD=cassandra
+    #      - CASSANDRA_START_RPC=true
+    #      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    depends_on:
+      - cassandra_master
+
+  cassandra_worker2:
+    image: cassandra:4
+    ports:
+      - "7002:7000"
+      - "9044:9042"
+    volumes:
+      - cassandra_worker2_data:/var/lib/cassandra
+    environment:
+      - CASSANDRA_SEEDS=cassandra_master
+      - CASSANDRA_CLUSTER_NAME=Mycluster
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+      - CASSANDRA_PASSWORD=cassandra
+    #      - CASSANDRA_START_RPC=true
+    #      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    depends_on:
+      - cassandra_master
+
+  cassandra_worker3:
+    image: cassandra:4
+    ports:
+      - "7003:7000"
+      - "9045:9042"
+    volumes:
+      - cassandra_worker3_data:/var/lib/cassandra
+    environment:
+      - CASSANDRA_SEEDS=cassandra_master
+      - CASSANDRA_CLUSTER_NAME=Mycluster
+      - MAX_HEAP_SIZE=2G
+      - HEAP_NEWSIZE=200M
+      - CASSANDRA_PASSWORD=cassandra
+    #      - CASSANDRA_START_RPC=true
+    #      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    depends_on:
+      - cassandra_master
+
+volumes:
+  cassandra_master_data:
+    driver: local
+  cassandra_worker1_data:
+    driver: local
+  cassandra_worker2_data:
+    driver: local
+  cassandra_worker3_data:
+    driver: local

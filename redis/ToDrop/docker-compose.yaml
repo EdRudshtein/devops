@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  redis:
+    build:
+      dockerfile: Dockerfile
+    image: egr_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data:/data
+      - ./conf/redis.conf.orig:/conf/redis.conf.orig
+    networks:
+      localnet:
+        aliases:
+          - my-redis-server
+    command: [ "redis-server", "/conf/redis.conf.orig" ]
+
+networks:
+  localnet:

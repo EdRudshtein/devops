@@ -1,0 +1,25 @@
+kind: PersistentVolume
+apiVersion: v1
+
+metadata:
+  name: postgres-pv
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /shared/postgres
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: agent0
+              operator: In
+              values:
+                - "true"

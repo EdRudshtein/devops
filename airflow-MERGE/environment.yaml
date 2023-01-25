@@ -1,0 +1,13 @@
+name: example-airflow-MERGE
+channels:
+  - anaconda
+  - conda-forge
+dependencies:
+  - ubuntu=3.9
+  - pandas
+  - pydantic
+  - pytest
+  - sqlalchemy
+  - pip
+  - pip:
+      - psycopg2

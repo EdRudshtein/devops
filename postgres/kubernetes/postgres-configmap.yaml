@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: postgres-config
+  labels:
+    app: postgres
+
+data:
+  POSTGRESQL_DATABASE: postgres
+  POSTGRESQL_USERNAME: egr
+  POSTGRESQL_PASSWORD: egr

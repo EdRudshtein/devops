@@ -1,0 +1,13 @@
+numpy
+pandas
+
+#redis
+#kafka-python
+#py4j
+#apache-airflow
+#apache-airflow-providers-sqlite
+#numpy
+#sqlalchemy
+#psycopg2
+#pytest
+#pyspark

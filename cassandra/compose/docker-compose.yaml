@@ -1,0 +1,54 @@
+version: "3.2"
+
+services:
+
+  cassandra_master:
+    image: bitnami/cassandra:3.11
+    ports:
+      - "7000:7000"
+      - "9042:9042"
+    environment:
+      CASSANDRA_BROADCAST_ADDRESS: "cassandra_master"
+#    deploy:
+#      restart_policy:
+#        condition: on-failure
+#        max_attempts: 3
+#        window: 120s
+#      placement:
+#        constraints:
+#          - node.hostname == node-001
+    volumes:
+      - cassandra_master_data:/bitnami
+  #    networks:
+  #      - cluster_net
+
+  cassandra_worker1:
+    image: bitnami/cassandra:3.11
+    ports:
+      - "7001:7000"
+      - "9043:9042"
+    environment:
+      CASSANDRA_BROADCAST_ADDRESS: "cassandra_worker1"
+      CASSANDRA_SEEDS: "cassandra_master"
+#    deploy:
+#      restart_policy:
+#        condition: on-failure
+#        max_attempts: 3
+#        window: 120s
+#      placement:
+#        constraints:
+#          - node.hostname == node-002
+    volumes:
+      - cassandra_worker1_data:/bitnami
+#    networks:
+#      - cluster_net
+volumes:
+  cassandra_master_data:
+    driver: local
+  cassandra_worker1_data:
+    driver: local
+#networks:
+#  cluster_net:
+#    external:
+#      name: cassandra-net
+
